@@ -1,0 +1,5 @@
+aiy-usb-gadget (1.0-1) stable; urgency=medium
+
+  * Initial release.
+
+ -- Dmitry Kovalev <dkovalev@google.com>  Thu, 18 Oct 2018 16:41:50 -0700

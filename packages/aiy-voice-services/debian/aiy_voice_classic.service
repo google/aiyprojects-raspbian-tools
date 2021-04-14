@@ -1,0 +1,11 @@
+[Unit]
+Description=AIY Voice HAT overlay
+
+[Service]
+Type=oneshot
+ExecStart=-/opt/aiy/voice-services/apply_voice_classic_overlay.sh
+RemainAfterExit=no
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target

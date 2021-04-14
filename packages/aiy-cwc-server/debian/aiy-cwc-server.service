@@ -1,0 +1,17 @@
+[Unit]
+Description=AIY Coding-with-Chrome Server
+Wants=network.target
+After=network.target
+Wants=aiy-board-info.service
+After=aiy-board-info.service
+
+[Service]
+Type=simple
+Restart=no
+User=pi
+Environment=AIY_BOARD_NAME=AIY-Board
+EnvironmentFile=-/run/aiy-board-info
+ExecStart=/opt/aiy/cwc-server/server.py --host 192.168.11.2 --mdns_name "${AIY_BOARD_NAME}"
+
+[Install]
+WantedBy=multi-user.target

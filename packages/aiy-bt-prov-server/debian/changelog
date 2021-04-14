@@ -1,0 +1,40 @@
+aiy-bt-prov-server (1.2-1) stable; urgency=medium
+
+  [ Dmitry Kovalev ]
+  * Do not hardcode GPIO base number
+  * Fix dhcpd socket message parsing
+
+-- Dmitry Kovalev <dkovalev@google.com>  Tue, 17 Nov 2020 16:32:38 -0800
+
+aiy-bt-prov-server (1.1-1) stable; urgency=medium
+
+  [ Dmitry Kovalev ]
+  * Minor compatibility fixes.
+
+-- Dmitry Kovalev <dkovalev@google.com>  Wed, 13 Nov 2019 13:18:20 -0800
+
+aiy-bt-prov-server (1.0-1) stable; urgency=medium
+
+  [ Dmitry Kovalev ]
+  * Proper debian package.
+
+ -- Dmitry Kovalev <dkovalev@google.com>  Tue, 30 Oct 2018 16:19:14 -0700
+
+aiy-bt-prov-server (1.0-0) stable; urgency=medium
+
+  [ Jonas Larsson ]
+  * Fix crash handling get_state message, always stop advertising when done.
+
+  [ Dmitry Kovalev ]
+  * Make bt_prov_server working on Voice Classic.
+
+  [ Alex Van Damme ]
+  * Set WiFi country through bt-prov-server
+
+ -- Alex Van Damme <atv@google.com>  Fri, 13 Apr 2018 11:00:18 -0700
+
+aiy-bt-prov-server (0.1-0) stable; urgency=medium
+
+  * Initial release.
+
+ -- Alex Van Damme <atv@google.com>  Fri, 01 Dec 2017 14:48:39 -0800

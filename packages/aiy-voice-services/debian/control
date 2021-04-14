@@ -1,0 +1,11 @@
+Source: aiy-voice-services
+Section: misc
+Priority: optional
+Maintainer: AIY Projects <support-aiyprojects@google.com>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 3.8.1
+
+Package: aiy-voice-services
+Architecture: all
+Depends: python3, ${misc:Depends}
+Description: AIY Voice Services

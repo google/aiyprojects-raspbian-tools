@@ -1,0 +1,163 @@
+#!/bin/bash
+# Copyright 2017 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+set -o xtrace
+set -o errexit
+
+readonly CONFIG_FILE="/boot/aiy_usb_gadget.txt"
+readonly g="/sys/kernel/config/usb_gadget/aiy"
+
+gadget_start() {
+    if [ -d ${g} ]; then
+        echo "Gadget is already started."
+        exit 1
+    fi
+    echo "Gadget is starting..."
+
+    SERIAL_NUMBER=$(cat /proc/device-tree/serial-number)
+
+    NETWORK=ecm  # Enable ECM networking by default.
+    SERIAL=      # Disable serial port by default.
+    if [ -f ${CONFIG_FILE} ]; then
+        source ${CONFIG_FILE}
+    fi
+
+    mkdir -p "${g}"
+    echo "0x0200" > "${g}/bcdUSB"     # USB 2.0
+    echo "0x0100" > "${g}/bcdDevice"  # v1.0.0
+
+    # Available vendor ids: http://www.linux-usb.org/usb.ids
+    case "${NETWORK}" in
+        ecm)
+            echo "0x1d6b" > "${g}/idVendor"   # Linux Foundation
+            echo "0x0104" > "${g}/idProduct"  # Multifunction Composite Gadget
+        ;;
+        rndis)
+            echo "0x18d1" > "${g}/idVendor"   # Google
+            echo "0x0001" > "${g}/idProduct"  # Unknown
+        ;;
+    esac
+
+    mkdir -p "${g}/strings/0x409"
+    echo "AIY"              > "${g}/strings/0x409/manufacturer"
+    echo "AIY USB Gadget"   > "${g}/strings/0x409/product"
+    echo "${SERIAL_NUMBER}" > "${g}/strings/0x409/serialnumber"
+
+    mkdir -p "${g}/configs/c.1/strings/0x409"
+    echo "500"     > "${g}/configs/c.1/MaxPower"
+    echo "Default" > "${g}/configs/c.1/strings/0x409/configuration"
+
+    # More info: https://en.wikipedia.org/wiki/Ethernet_over_USB
+    case "${NETWORK}" in
+        ecm)
+            # ECM networking (macOS, Linux, Chrome OS).
+            mkdir -p "${g}/functions/ecm.usb0"
+            IFNAME="${g}/functions/ecm.usb0/ifname"
+
+            ln -s "${g}/functions/ecm.usb0" "${g}/configs/c.1/"
+        ;;
+        rndis)
+            # RNDIS networking (Windows RNDIS 6.0 Driver).
+            mkdir -p "${g}/functions/rndis.usb0"
+            echo "RNDIS"   > "${g}/functions/rndis.usb0/os_desc/interface.rndis/compatible_id"
+            echo "5162001" > "${g}/functions/rndis.usb0/os_desc/interface.rndis/sub_compatible_id"
+            IFNAME="${g}/functions/rndis.usb0/ifname"
+
+            ln -s "${g}/functions/rndis.usb0" "${g}/configs/c.1/"
+            ln -s "${g}/configs/c.1" "${g}/os_desc"
+            echo "0xcd"    > "${g}/os_desc/b_vendor_code"
+            echo "MSFT100" > "${g}/os_desc/qw_sign"
+            echo "1"       > "${g}/os_desc/use"
+        ;;
+    esac
+
+    case "${SERIAL}" in
+        acm)
+            mkdir -p "${g}/functions/acm.usb0"
+            ln -s "${g}/functions/acm.usb0" "${g}/configs/c.1/"
+        ;;
+    esac
+
+    # Bind only if something has been configured.
+    if [ "$(ls -A ${g}/functions)" ]; then
+        ls /sys/class/udc/ > "${g}/UDC"
+    fi
+
+    # Configure network interface.
+    if [ -n "${IFNAME}" ]; then
+        ifconfig "$(cat ${IFNAME})" 192.168.11.2 netmask 255.255.255.0
+    fi
+
+    # Start getty service if serial port is available.
+    if [ -f "${g}/functions/acm.usb0/port_num" ]; then
+        N="$(cat "${g}/functions/acm.usb0/port_num")"
+        systemctl start "serial-getty@ttyGS${N}.service" || true
+    fi
+
+    echo "Gadget has started."
+}
+
+gadget_stop() {
+    if [ ! -d ${g} ]; then
+        echo "Gadget is already stopped."
+        exit 1
+    fi
+    echo "Gadget is stopping..."
+
+    # Stop getty service if serial port is available.
+    if [ -f "${g}/functions/acm.usb0/port_num" ]; then
+        N="$(cat "${g}/functions/acm.usb0/port_num")"
+        systemctl stop "serial-getty@ttyGS${N}.service" || true
+    fi
+
+    # Unbind.
+    if [ "$(cat ${g}/UDC)" != "" ]; then
+        echo "" > "${g}/UDC"
+    fi
+
+    # Unlink.
+    rm -f "${g}/configs/c.1/ecm.usb0"
+    rm -f "${g}/configs/c.1/rndis.usb0"
+    rm -f "${g}/configs/c.1/acm.usb0"
+    rm -f "${g}/os_desc/c.1"
+
+    # Remove.
+    for dir in "${g}/configs/c.1/strings/0x409" \
+               "${g}/configs/c.1" \
+               "${g}/functions/ecm.usb0" \
+               "${g}/functions/rndis.usb0" \
+               "${g}/functions/acm.usb0" \
+               "${g}/strings/0x409" \
+               "${g}"; do
+        if [ -d "${dir}" ]; then
+            rmdir "${dir}"
+        fi
+    done
+
+    echo "Gadget has stopped."
+}
+
+case "$1" in
+    start)
+        gadget_start
+    ;;
+    stop)
+        gadget_stop
+    ;;
+    *)
+      echo "Usage: $0 start|stop"
+      exit 1
+    ;;
+esac

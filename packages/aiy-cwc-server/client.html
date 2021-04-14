@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Demo</title>
+    </head>
+    <body>
+        <script>
+            var pythonCode = `
+import argparse
+import os
+import sys
+import time
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-n', dest='num_iters', type=int, default=5000)
+    parser.add_argument('-p', dest='pause', type=float, default=0.1)
+    args = parser.parse_args()
+
+    print('num_iters=%d' % args.num_iters)
+    print('pause=%f' % args.pause)
+
+    for i in range(args.num_iters):
+        print('Iteration #%05d [STDOUT] (pid=%d)' % (i, os.getpid()), file=sys.stdout)
+        print('Iteration #%05d [STDERR] (pid=%d)' % (i, os.getpid()), file=sys.stderr)
+        time.sleep(args.pause)
+
+`
+            var ws = new WebSocket("ws://raspberrypi.local:8765/spawn"),
+            //var ws = new WebSocket("ws://localhost:8765/spawn"),
+            messages = document.createElement('ul');
+            ws.onmessage = function (event) {
+                msg = JSON.parse(event.data)
+
+                if (msg.type == 'stdout' || msg.type == 'stderr') {
+                    var messages = document.getElementsByTagName('ul')[0],
+                    message = document.createElement('li'),
+                    content = document.createTextNode(atob(msg.data));
+
+                    if (msg.type == 'stderr') {
+                        message.style.color = 'red';
+                    }
+                    message.appendChild(content);
+                    messages.appendChild(message);
+                }
+            };
+
+            ws.onopen = function(event) {
+                ws.send(JSON.stringify({
+                    type: 'run',
+                    files: {'main.py': pythonCode},
+                    env: {'PYTHONUNBUFFERED': '1'},
+                    args: ['/usr/bin/env', 'python3', 'main.py', '-n', '400']}));
+            };
+
+            var button = document.createElement('button');
+            button.innerHTML = 'Ctrl-C';
+            button.onclick = function() {
+                ws.send(JSON.stringify({type: 'signal', signum: 2}));
+                return false;
+            };
+            document.body.appendChild(button);
+            document.body.appendChild(messages);
+        </script>
+    </body>
+</html>

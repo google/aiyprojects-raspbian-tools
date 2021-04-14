@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+case "$1" in
+    configure)
+        if [ -z "$2" ]; then
+            echo -e '[pi0]\ndtoverlay=dwc2\n[all]' >> /boot/config.txt
+        fi
+        ;;
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 0
+    ;;
+esac
+
+#DEBHELPER#

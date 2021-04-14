@@ -1,0 +1,14 @@
+[Unit]
+Description=AIY USB Gadget
+ConditionPathIsDirectory=/sys/kernel/config/usb_gadget
+After=systemd-modules-load.service
+Before=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/aiy/gadget/gadget start
+ExecStop=/opt/aiy/gadget/gadget stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=network.target

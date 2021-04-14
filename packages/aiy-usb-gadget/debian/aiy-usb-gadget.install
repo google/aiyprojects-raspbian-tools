@@ -1,0 +1,3 @@
+gadget /opt/aiy/gadget/
+debian/modprobe.d/dwc2.conf /etc/modprobe.d/
+debian/dnsmasq.d/aiy-usb-gadget.conf /etc/dnsmasq.d/

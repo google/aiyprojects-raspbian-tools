@@ -1,0 +1,10 @@
+Source: aiy-board-info
+Section: misc
+Priority: optional
+Maintainer: AIY Projects <support-aiyprojects@google.com>
+Build-Depends: debhelper (>= 10)
+
+Package: aiy-board-info
+Architecture: all
+Depends: python3, ${misc:Depends}
+Description: AIY Kit Information

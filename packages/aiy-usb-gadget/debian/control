@@ -1,0 +1,11 @@
+Source: aiy-usb-gadget
+Section: misc
+Priority: optional
+Maintainer: AIY Projects <support-aiyprojects@google.com>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 3.8.1
+
+Package: aiy-usb-gadget
+Architecture: all
+Depends: dnsmasq, ${misc:Depends}
+Description: AIY USB Gadget

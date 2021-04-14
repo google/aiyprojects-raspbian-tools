@@ -1,0 +1,2 @@
+*.py /opt/aiy/bt-prov-server
+*.conf /etc/systemd/system/bluetooth.service.d/

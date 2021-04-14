@@ -1,0 +1,2 @@
+SUBSYSTEM=="pwm", PROGRAM="/bin/systemctl start aiy_io_permission.service"
+SUBSYSTEM=="pwm", ACTION=="remove", PROGRAM="/bin/systemctl stop aiy_io_permission.service"

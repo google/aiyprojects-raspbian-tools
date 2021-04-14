@@ -1,0 +1,3 @@
+[submodule "packages/aiy-projects-python"]
+	path = packages/aiy-projects-python
+	url = https://github.com/google/aiyprojects-raspbian.git

@@ -1,0 +1,26 @@
+aiy-io-mcu-firmware (1.0-1) stable; urgency=medium
+
+  * Proper deb package, fix lintian errors.
+
+ -- Dmitry Kovalev <dkovalev@google.com>  Thu, 30 Aug 2018 15:28:07 -0700
+
+aiy-io-mcu-firmware (1.0-0) stable; urgency=medium
+
+  [ henryherman ]
+  * Fix typo in log message.
+
+  [ Alex Van Damme ]
+  * Re-debianize io-mcu-firmware
+  * Generate changelog from git history
+
+ -- Alex Van Damme <atv@google.com>  Fri, 13 Apr 2018 10:57:59 -0700
+
+aiy-io-mcu-firmware (0.2-0) stable; urgency=medium
+
+  [ AIY Projects ]
+  * Initial release.
+
+  [ AIY Projects ]
+  * Increment to 0.5 firmware.
+
+ -- AIY Projects <support-aiyprojects@google.com>  Wed, 14 Feb 2018 17:48:45 -0800

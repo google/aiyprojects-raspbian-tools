@@ -1,0 +1,2 @@
+*.py /opt/aiy/io-mcu-firmware
+*.bin /lib/firmware

@@ -1,0 +1,10 @@
+[Unit]
+Description=AIY Kit Information
+
+[Service]
+Type=oneshot
+Restart=no
+ExecStart=/usr/bin/python3 /opt/aiy/board-info/aiy_board_info.py /run/aiy-board-info
+
+[Install]
+WantedBy=multi-user.target

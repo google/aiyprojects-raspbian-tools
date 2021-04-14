@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+
+case "$1" in
+    remove|upgrade|deconfigure)
+        pip3 uninstall -y protobuf
+
+        SITE_PACKAGES=$(python3 -c "import site; print(site.getsitepackages()[0])")
+        SITE_PACKAGES_ARMV6L="${SITE_PACKAGES}-linux_armv6l"
+        SITE_PACKAGES_ARMV7L="${SITE_PACKAGES}-linux_armv7l"
+
+        rm -rf "${SITE_PACKAGES_ARMV6L}" \
+               "${SITE_PACKAGES_ARMV7L}" \
+               "${SITE_PACKAGES}/aiy.pth"
+    ;;
+
+    failed-upgrade)
+    ;;
+
+    *)
+        echo "prerm called with unknown argument \`${1}'" >&2
+        exit 1
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0

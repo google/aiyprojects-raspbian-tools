@@ -1,0 +1,11 @@
+Source: aiy-cwc-server
+Section: misc
+Priority: optional
+Maintainer: AIY Projects <support-aiyprojects@google.com>
+Build-Depends: debhelper (>= 10)
+
+Package: aiy-cwc-server
+Architecture: all
+Depends: python3, avahi-utils, python3-aiohttp, ${misc:Depends}
+Description: AIY Coding with Chrome Server
+ Server to run python programs and communicate with Coding with Chrome.

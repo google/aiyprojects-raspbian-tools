@@ -1,0 +1,12 @@
+[Unit]
+Description=AIY IO Permission Service
+
+[Service]
+Type=simple
+ExecStart=/opt/aiy/io-mcu-firmware/aiy_io_permission_service.py
+RemainAfterExit=no
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,12 @@
+[Unit]
+Description=AIY MCU Updater
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/aiy/io-mcu-firmware/aiy_mcu_updater.py
+RemainAfterExit=yes
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target

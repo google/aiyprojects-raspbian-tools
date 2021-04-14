@@ -1,0 +1,11 @@
+Source: aiy-bt-prov-server
+Section: misc
+Priority: optional
+Maintainer: AIY Projects <support-aiyprojects@google.com>
+Build-Depends: debhelper (>= 7), dkms
+Standards-Version: 3.8.1
+
+Package: aiy-bt-prov-server
+Architecture: all
+Depends: dkms (>= 1.95), python3, python3-bluez, python3-dbus, python3-gpiozero, aiy-python-wheels, ${misc:Depends}
+Description: AIY Bluetooth provisioning server

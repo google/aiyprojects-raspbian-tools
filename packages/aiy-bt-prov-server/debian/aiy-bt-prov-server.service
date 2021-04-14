@@ -1,0 +1,17 @@
+[Unit]
+Description=Bluetooth provisioning server
+Wants=bluetooth.target
+After=bluetooth.target
+Wants=aiy-board-info.service
+After=aiy-board-info.service
+
+[Service]
+Type=simple
+Restart=no
+Environment=AIY_BOARD_ID=0
+Environment=AIY_BOARD_NAME=AIY-Board
+EnvironmentFile=-/run/aiy-board-info
+ExecStart=/opt/aiy/bt-prov-server/bt_prov_server.py --syslog --kit_id=${AIY_BOARD_ID} --kit_name=${AIY_BOARD_NAME}
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+*.img
+*.img.xz
+*.deb
+*.changes
+*.buildinfo
+*.substvars
+.DS_Store
+.debhelper
+out
+__pycache__
+debhelper-build-stamp

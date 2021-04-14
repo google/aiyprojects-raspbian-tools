@@ -1,0 +1,42 @@
+#!/bin/bash
+
+set -e
+
+case "$1" in
+    configure)
+        # Protobuf
+        PLATFORM=$(python3 -c "import distutils.util; print(distutils.util.get_platform().replace('.', '_').replace('-', '_'))")
+        pip3 install --no-deps --no-cache-dir --disable-pip-version-check \
+            "/opt/aiy/python-wheels/protobuf-3.14.0-cp37-cp37m-${PLATFORM}.whl"
+
+        # Google Assistant
+        SITE_PACKAGES=$(python3 -c "import site; print(site.getsitepackages()[0])")
+
+        # armv6l
+        SITE_PACKAGES_ARMV6L="${SITE_PACKAGES}-linux_armv6l"
+        mkdir -p "${SITE_PACKAGES_ARMV6L}"
+        unzip -d "${SITE_PACKAGES_ARMV6L}" \
+            /opt/aiy/python-wheels/google_assistant_library-1.1.0-py2.py3-none-linux_armv6l.whl
+
+        # armv7l
+        SITE_PACKAGES_ARMV7L="${SITE_PACKAGES}-linux_armv7l"
+        mkdir -p "${SITE_PACKAGES_ARMV7L}"
+        unzip -d "${SITE_PACKAGES_ARMV7L}" \
+            /opt/aiy/python-wheels/google_assistant_library-1.1.0-py2.py3-none-linux_armv7l.whl
+
+        cat > ${SITE_PACKAGES}/aiy.pth <<EOF
+import distutils.util; import sys; import site; path='%s-%s' %(site.getsitepackages()[0], distutils.util.get_platform().replace('.', '_').replace('-', '_')); {True: [], False: sys.path}.get(path in sys.path).append(path);
+EOF
+    ;;
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 0
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0
