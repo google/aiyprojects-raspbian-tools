@@ -29,14 +29,15 @@ groupadd --gid $(id -g) $(id -g -n);
 useradd -m -e "" -s /bin/bash --gid $(id -g) --uid $(id -u) $(id -u -n);
 passwd -d $(id -u -n);
 echo "$(id -u -n) ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers;
-sudo -E -u $(id -u -n) /overlay-aiyprojects/scripts/build_image_native.sh /deb /image;
+sudo -E -u $(id -u -n) /aiy/scripts/build_image_native.sh /deb /image;
 EOF
 
 docker run --rm --privileged -i $(tty -s && echo --tty) \
   --env AIY_CLEAN_TMP \
   --env AIY_BUILD_PARALLEL \
-  --volume "${SCRIPT_DIR}/..":/overlay-aiyprojects \
+  --volume "${SCRIPT_DIR}/..":/aiy\
   --volume "${DEB_DIR}":/deb \
   --volume "${IMAGE}":/image \
   "${DOCKER_IMAGE:-aiy-builder}" \
   /bin/bash -c "${SCRIPT}"
+

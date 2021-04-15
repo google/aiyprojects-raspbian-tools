@@ -46,11 +46,11 @@ fi
 # Run image setup script.
 shell_image \
     --mount "${DEB_DIR}:/deb" \
-    --mount "${SCRIPT_DIR}/..:/overlay-aiyprojects" \
+    --mount "${SCRIPT_DIR}/..:/aiy" \
     --mount "${SCRIPT_DIR}/../overlay:/overlay" \
     --arg "Build info: $(LANG=C date -u) @ $(git -C "${SCRIPT_DIR}" rev-parse --short HEAD)" \
     --arg /deb \
-    --arg /overlay-aiyprojects/packages/aiy-projects-python \
+    --arg /aiy/packages/aiy-projects-python \
     --arg /overlay \
     "${IMAGE}" < "${SCRIPT_DIR}/setup_image.sh"
 

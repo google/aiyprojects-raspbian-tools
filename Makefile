@@ -46,8 +46,8 @@ docker-image-remove:
 	docker rmi $(DOCKER_IMAGE)
 
 docker-shell: docker-image
-	docker run --rm --privileged --interactive --tty --workdir /spacepark \
-		--volume $(MAKEFILE_DIR)/..:/spacepark $(DOCKER_IMAGE) /bin/bash
+	docker run --rm --privileged --interactive --tty --workdir /aiy \
+		--volume $(MAKEFILE_DIR):/aiy $(DOCKER_IMAGE) /bin/bash
 
 # Image builds
 release:
