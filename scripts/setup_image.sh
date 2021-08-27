@@ -106,10 +106,10 @@ if ! ls /tmp/libttspico0_*.deb; then
   (cd /tmp && wget http://archive.raspberrypi.org/debian/pool/main/s/svox/libttspico0_1.0+git20130326-3+rpi1_armhf.deb)
 fi
 
-time apt ${APT_NONINTERACTIVE} install --fix-broken --no-upgrade raspberrypi-kernel-headers
+time apt-get ${APT_NONINTERACTIVE} install --fix-broken --no-upgrade raspberrypi-kernel-headers
 
-time apt ${APT_NONINTERACTIVE} update && \
-     apt ${APT_NONINTERACTIVE} install --fix-broken --no-upgrade \
+time apt-get ${APT_NONINTERACTIVE} update --allow-releaseinfo-change && \
+     apt-get ${APT_NONINTERACTIVE} install --fix-broken --no-upgrade \
   alsa-utils \
   avahi-utils \
   dkms \
@@ -122,10 +122,10 @@ time apt ${APT_NONINTERACTIVE} update && \
   /tmp/libttspico-utils_*.deb \
   /tmp/libttspico0_*.deb
 
-time apt ${APT_NONINTERACTIVE} remove \
+time apt-get ${APT_NONINTERACTIVE} remove \
   lxplug-volume
 
-time apt ${APT_NONINTERACTIVE} autoremove
+time apt-get ${APT_NONINTERACTIVE} autoremove
 
 # Install general packages.
 install_package $(ls ${DEB_DIR}/aiy-python-wheels_*.deb)
